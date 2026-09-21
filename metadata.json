@@ -1,0 +1,6 @@
+{
+  "name": "Flores Animadas Románticas",
+  "description": "Celebración interactiva de cumpleaños 16 para Génesis con árbol animado de girasoles amarillos floreciendo, beat instrumental de Starboy (The Weeknd) y paneles de deseos y amistad.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
