@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, Eye, X } from 'lucide-react';
+import { Sparkles, Eye, X, Heart, ArrowRight } from 'lucide-react';
 
 interface RomanticLetterProps {
   visible: boolean;
@@ -9,6 +9,7 @@ interface RomanticLetterProps {
   closingText: string;
   senderText?: string;
   onClose: () => void;
+  onOpenFriendLetters?: () => void;
 }
 
 const RomanticLetterComponent: React.FC<RomanticLetterProps> = ({
@@ -19,11 +20,13 @@ const RomanticLetterComponent: React.FC<RomanticLetterProps> = ({
   closingText,
   senderText,
   onClose,
+  onOpenFriendLetters,
 }) => {
   const [displayedTitle, setDisplayedTitle] = useState('');
   const [displayedBody, setDisplayedBody] = useState('');
   const [titleDone, setTitleDone] = useState(false);
   const [bodyDone, setBodyDone] = useState(false);
+  const [autoPromptVisible, setAutoPromptVisible] = useState(false);
 
   // Typewriter effect sequence
   useEffect(() => {
@@ -32,6 +35,7 @@ const RomanticLetterComponent: React.FC<RomanticLetterProps> = ({
       setDisplayedBody('');
       setTitleDone(false);
       setBodyDone(false);
+      setAutoPromptVisible(false);
       return;
     }
 
@@ -67,6 +71,20 @@ const RomanticLetterComponent: React.FC<RomanticLetterProps> = ({
       if (bodyTimer) clearInterval(bodyTimer);
     };
   }, [visible, greetingText, bodyText]);
+
+  // 5-second graceful timer after writing completes for the button prompt
+  useEffect(() => {
+    if (!bodyDone) {
+      setAutoPromptVisible(false);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setAutoPromptVisible(true);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [bodyDone]);
 
   if (!visible) return null;
 
@@ -131,10 +149,28 @@ const RomanticLetterComponent: React.FC<RomanticLetterProps> = ({
 
         {/* Interactive Actions */}
         <div
-          className={`mt-4 pt-1 flex flex-wrap items-center justify-center gap-2.5 transition-opacity duration-700 ${
+          className={`mt-4 pt-1 flex flex-col sm:flex-row items-center justify-center gap-2.5 transition-opacity duration-700 ${
             bodyDone ? 'opacity-100' : 'opacity-30 pointer-events-none'
           }`}
         >
+          {/* Main Next Button: "Ver más mensajes" (Section: Unos mensajes para ti) */}
+          {onOpenFriendLetters && (
+            <button
+              type="button"
+              onClick={onOpenFriendLetters}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold tracking-wide transition-all duration-500 cursor-pointer shadow-md ${
+                autoPromptVisible
+                  ? 'bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 scale-105 shadow-[0_4px_15px_rgba(245,158,11,0.4)] animate-pulse'
+                  : 'bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 active:scale-95 text-stone-950'
+              }`}
+              title="Descubrir mensajes adicionales para ti"
+            >
+              <Heart className="w-4 h-4 fill-stone-950 text-stone-950" />
+              <span>Ver más mensajes</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          )}
+
           {/* Button: Minimize / View Garden */}
           <button
             type="button"

@@ -40,7 +40,7 @@ export interface Particle {
   rotationSpeed: number;
 }
 
-export type ActivePanel = 'letter' | 'garden';
+export type ActivePanel = 'letter' | 'friend_letters' | 'garden';
 
 export interface TouchRipple {
   id: number;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mail, Sparkles } from 'lucide-react';
+import { Mail, Sparkles, Heart } from 'lucide-react';
 import { ActivePanel } from '../../types';
 
 interface NavBarProps {
@@ -18,6 +18,11 @@ export const NavBar: React.FC<NavBarProps> = ({
       id: 'letter' as ActivePanel,
       label: 'Carta',
       icon: Mail,
+    },
+    {
+      id: 'friend_letters' as ActivePanel,
+      label: 'Mensajes',
+      icon: Heart,
     },
     {
       id: 'garden' as ActivePanel,

@@ -6,6 +6,7 @@ import { FallingSunflowerIntro } from './components/FallingSunflowerIntro';
 import { SunflowerTree, SunflowerTreeState } from './components/SunflowerTree';
 import { GardenFlowers } from './components/GardenFlowers';
 import { RomanticLetter } from './components/RomanticLetter';
+import { FriendLettersPanel } from './components/FriendLettersPanel';
 import { InteractiveTouchLayer } from './components/InteractiveTouchLayer';
 import { GardenPanel } from './components/Panels/GardenPanel';
 import { NavBar } from './components/Panels/NavBar';
@@ -317,10 +318,26 @@ export default function App() {
             closingText={closingText}
             senderText={senderText}
             onClose={() => setIsLetterOpen(false)}
+            onOpenFriendLetters={() => {
+              setActivePanel('friend_letters');
+              setIsLetterOpen(true);
+            }}
           />
         )}
 
-        {/* Panel 2: Interactive Garden Controls */}
+        {/* Panel 2: Three Special Friend Letters (Alicia, Elianis, Joice) */}
+        {activePanel === 'friend_letters' && messageVisible && isLetterOpen && (
+          <FriendLettersPanel
+            visible={messageVisible}
+            onClose={() => setIsLetterOpen(false)}
+            onGoBackToMainLetter={() => {
+              setActivePanel('letter');
+              setIsLetterOpen(true);
+            }}
+          />
+        )}
+
+        {/* Panel 3: Interactive Garden Controls */}
         {activePanel === 'garden' && (
           <GardenPanel
             onTriggerPetalRain={handleTriggerPetalRain}
@@ -333,13 +350,13 @@ export default function App() {
         )}
       </div>
 
-      {/* 8. Floating Navigation Tab Bar for switching panels (Carta & Jardín) */}
+      {/* 8. Floating Navigation Tab Bar for switching panels (Carta, Mensajes & Jardín) */}
       {messageVisible && (
         <NavBar
           activePanel={activePanel}
           onSelectPanel={(panel) => {
             setActivePanel(panel);
-            if (panel === 'letter') {
+            if (panel === 'letter' || panel === 'friend_letters') {
               setIsLetterOpen(true);
             }
           }}
