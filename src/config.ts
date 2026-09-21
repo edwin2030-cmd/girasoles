@@ -71,7 +71,7 @@ export const APP_CONFIG: RomanticAppConfig = {
   message: {
     badge: "DULCES 16 • GÉNESIS",
     greeting: "¡Feliz cumpleaños, Génesis!",
-    body: "Espero que tengas un día muy bonito y lleno de momentos especiales. Eres una persona muy bonita, con una energía increíble, y mereces que te pasen cosas muy buenas.\n\nDisfruta mucho tus 16 y que este nuevo año venga lleno de sonrisas, sueños cumplidos y muchas cosas lindas.\n\n¡Feliz cumpleaños!",
+    body: "Espero que tengas un día muy bonito y lleno de momentos especiales. Eres una persona muy bonita, con una energía increíble, y mereces que te pasen cosas muy buenas.\n\nDisfruta mucho tus 16 y que este nuevo año venga lleno de sonrisas, sueños cumplidos y muchas cosas lindas.\n\n¡Feliz cumpleaños!\n att: El Amor de tu vida (osea,winni)",
     closing: "Con mucho cariño, te deseo lo mejor siempre...desbloqueame .",
     sender: "",
   },
