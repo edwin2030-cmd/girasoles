@@ -4,13 +4,12 @@ import { FlowerConfig } from '../types';
 interface GardenFlowersProps {
   gardenStarted: boolean;
   gardenProgress: number; // 0 to 1 overall garden emergence
-  currentTime: number; // for smooth wind swaying
+  currentTime?: number; // optional, now using GPU CSS animations for high performance
 }
 
-export const GardenFlowers: React.FC<GardenFlowersProps> = ({
+const GardenFlowersComponent: React.FC<GardenFlowersProps> = ({
   gardenStarted,
   gardenProgress,
-  currentTime,
 }) => {
   // All flowers are vibrant yellow sunflowers and golden blossoms
   const sunflowerGarden: FlowerConfig[] = useMemo(() => {
@@ -322,11 +321,14 @@ export const GardenFlowers: React.FC<GardenFlowersProps> = ({
         const stemGrowth = Math.min(1, localProgress * 1.6);
         const bloomProgress = Math.max(0, (localProgress - 0.35) / 0.65);
 
-        const sway =
-          Math.sin(currentTime * flower.swaySpeed + flower.swayPhase) * flower.swayAmount;
-
         const widthPx = 150 * flower.size;
         const heightPx = (flower.height + 70) * flower.size;
+        const swayClass =
+          flower.swayPhase < 1.5
+            ? 'animate-sway-a'
+            : flower.swayPhase < 3.0
+            ? 'animate-sway-b'
+            : 'animate-sway-c';
 
         return (
           <div
@@ -345,11 +347,9 @@ export const GardenFlowers: React.FC<GardenFlowersProps> = ({
           >
             <svg
               viewBox="0 0 150 340"
-              className="w-full h-full overflow-visible"
+              className={`w-full h-full overflow-visible ${swayClass}`}
               style={{
-                transform: `rotate(${sway}deg)`,
-                transformOrigin: '75px 335px',
-                transition: 'transform 0.05s linear',
+                animationDelay: `${(flower.swayPhase * 0.8).toFixed(2)}s`,
               }}
             >
               <defs>
@@ -466,3 +466,5 @@ export const GardenFlowers: React.FC<GardenFlowersProps> = ({
     </div>
   );
 };
+
+export const GardenFlowers = React.memo(GardenFlowersComponent);

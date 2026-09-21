@@ -5,7 +5,7 @@ export interface SunflowerTreeState {
   branchProgress: number; // 0 to 1 (expansion phase)
   bloomProgress: number; // 0 to 1 (blooming of sunflowers)
   sparkleBurst: boolean;
-  swayAngle: number;
+  swayAngle?: number;
 }
 
 interface SunflowerTreeProps {
@@ -23,8 +23,8 @@ interface TreeFlowerNode {
   branchSide: 'left' | 'right' | 'center' | 'top';
 }
 
-export const SunflowerTree: React.FC<SunflowerTreeProps> = ({ state, onFlowerClick }) => {
-  const { trunkProgress, branchProgress, bloomProgress, sparkleBurst, swayAngle } = state;
+const SunflowerTreeComponent: React.FC<SunflowerTreeProps> = ({ state, onFlowerClick }) => {
+  const { trunkProgress, branchProgress, bloomProgress, sparkleBurst } = state;
 
   // Pre-calculated organic sunflower blossom positions distributed across the expanded branches
   const treeFlowers: TreeFlowerNode[] = useMemo(() => {
@@ -71,12 +71,7 @@ export const SunflowerTree: React.FC<SunflowerTreeProps> = ({ state, onFlowerCli
     >
       <svg
         viewBox="0 0 720 740"
-        className="w-full h-full overflow-visible"
-        style={{
-          transform: `rotate(${swayAngle}deg)`,
-          transformOrigin: '360px 690px',
-          transition: 'transform 0.08s ease-out',
-        }}
+        className="w-full h-full overflow-visible animate-tree-sway"
       >
         <defs>
           {/* Tree Trunk & Branches Wooden Bark Gradients */}
@@ -125,17 +120,67 @@ export const SunflowerTree: React.FC<SunflowerTreeProps> = ({ state, onFlowerCli
 
           {/* Radiant Solar Aura for full blooming tree */}
           <radialGradient id="sunflowerSolarAura" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="rgba(254, 240, 138, 0.45)" />
-            <stop offset="35%" stopColor="rgba(251, 191, 36, 0.25)" />
-            <stop offset="70%" stopColor="rgba(245, 158, 11, 0.08)" />
+            <stop offset="0%" stopColor="rgba(254, 240, 138, 0.4)" />
+            <stop offset="35%" stopColor="rgba(251, 191, 36, 0.2)" />
+            <stop offset="70%" stopColor="rgba(245, 158, 11, 0.05)" />
             <stop offset="100%" stopColor="rgba(0, 0, 0, 0)" />
           </radialGradient>
 
-          {/* Glow filter */}
-          <filter id="solarGlow" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="5" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-          </filter>
+          {/* Ultra-Fast Reusable Sunflower Bloom Symbol (12 outer + 12 inner petals + disc) */}
+          <g id="sunflowerBloomSymbol">
+            <circle cx="0" cy="0" r="38" fill="rgba(254, 240, 138, 0.12)" />
+            {/* Outer Ray Petals */}
+            {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((angle, i) => (
+              <g key={`sym-p1-${i}`} transform={`rotate(${angle})`}>
+                <path
+                  d="M 0,0 C -5,-10 -7,-26 0,-32 C 7,-26 5,-10 0,0 Z"
+                  fill="url(#sunflowerPetalGrad)"
+                  stroke="#d97706"
+                  strokeWidth="0.4"
+                  opacity="0.96"
+                />
+                <line x1="0" y1="-8" x2="0" y2="-28" stroke="#fef9c3" strokeWidth="0.5" opacity="0.6" />
+              </g>
+            ))}
+
+            {/* Inner Ray Petals */}
+            {[15, 45, 75, 105, 135, 165, 195, 225, 255, 285, 315, 345].map((angle, i) => (
+              <g key={`sym-p2-${i}`} transform={`rotate(${angle}) scale(0.85)`}>
+                <path
+                  d="M 0,0 C -4.5,-9 -6,-24 0,-29 C 6,-24 4.5,-9 0,0 Z"
+                  fill="url(#sunflowerInnerPetalGrad)"
+                  stroke="#b45309"
+                  strokeWidth="0.3"
+                  opacity="0.95"
+                />
+              </g>
+            ))}
+
+            {/* Sunflower Heart Disc */}
+            <circle cx="0" cy="0" r="13.5" fill="url(#sunflowerDiscGrad)" stroke="#78350f" strokeWidth="0.9" />
+            <circle
+              cx="0"
+              cy="0"
+              r="9.5"
+              fill="none"
+              stroke="#f59e0b"
+              strokeWidth="1.1"
+              strokeDasharray="2,2"
+              opacity="0.85"
+            />
+            <circle
+              cx="0"
+              cy="0"
+              r="5.5"
+              fill="none"
+              stroke="#fbbf24"
+              strokeWidth="0.9"
+              strokeDasharray="1.5,1.5"
+              opacity="0.9"
+            />
+            <circle cx="0" cy="0" r="2.5" fill="#fef08a" />
+            <circle cx="-5" cy="-5" r="1.3" fill="#ffffff" opacity="0.85" />
+          </g>
         </defs>
 
         {/* 0. Solar ambient halo behind tree when blooming */}
@@ -374,89 +419,20 @@ export const SunflowerTree: React.FC<SunflowerTreeProps> = ({ state, onFlowerCli
             {treeFlowers.map((flower) => {
               if (bloomProgress < flower.delay) return null;
               const localProg = Math.min(1, (bloomProgress - flower.delay) / (1 - flower.delay));
-              // Smooth pop and bloom easing
+              // Fast cubic pop easing
               const currentScale = (1 - Math.pow(1 - localProg, 3)) * flower.size;
               if (currentScale <= 0.01) return null;
-
-              const rPetal = 32;
-              const rDisc = 13.5;
 
               return (
                 <g
                   key={flower.id}
                   transform={`translate(${flower.x}, ${flower.y}) rotate(${flower.rotation}) scale(${currentScale})`}
                   style={{
-                    transformOrigin: '0px 0px',
-                    filter: 'drop-shadow(0 3px 8px rgba(0,0,0,0.45))',
                     cursor: 'pointer',
                   }}
                   onClick={() => onFlowerClick && onFlowerClick(flower.x, flower.y)}
                 >
-                  {/* Subtle sun ray aura */}
-                  <circle cx="0" cy="0" r={rPetal + 8} fill="rgba(254, 240, 138, 0.15)" />
-
-                  {/* Outer Layer: 16 Golden Ray Petals */}
-                  {[0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5, 180, 202.5, 225, 247.5, 270, 292.5, 315, 337.5].map(
-                    (angle, i) => (
-                      <g key={`p1-${i}`} transform={`rotate(${angle})`}>
-                        <path
-                          d={`M 0,0 C -6,-12 -8,-${rPetal - 6} 0,-${rPetal} C 8,-${rPetal - 6} 6,-12 0,0 Z`}
-                          fill="url(#sunflowerPetalGrad)"
-                          stroke="#d97706"
-                          strokeWidth="0.4"
-                          opacity="0.96"
-                        />
-                        {/* Central petal ray line */}
-                        <line x1="0" y1="-8" x2="0" y2={`-${rPetal - 4}`} stroke="#fef9c3" strokeWidth="0.5" opacity="0.6" />
-                      </g>
-                    )
-                  )}
-
-                  {/* Inner Layer: 16 Offset Golden Ray Petals */}
-                  {[11.25, 33.75, 56.25, 78.75, 101.25, 123.75, 146.25, 168.75, 191.25, 213.75, 236.25, 258.75, 281.25, 303.75, 326.25, 348.75].map(
-                    (angle, i) => (
-                      <g key={`p2-${i}`} transform={`rotate(${angle}) scale(0.85)`}>
-                        <path
-                          d={`M 0,0 C -5,-10 -7,-${rPetal - 6} 0,-${rPetal} C 7,-${rPetal - 6} 5,-10 0,0 Z`}
-                          fill="url(#sunflowerInnerPetalGrad)"
-                          stroke="#b45309"
-                          strokeWidth="0.3"
-                          opacity="0.95"
-                        />
-                      </g>
-                    )
-                  )}
-
-                  {/* Center Disc Florets (Dark seed heart of sunflower) */}
-                  <circle cx="0" cy="0" r={rDisc} fill="url(#sunflowerDiscGrad)" stroke="#78350f" strokeWidth="0.9" />
-
-                  {/* Golden pollen ring pattern */}
-                  <circle
-                    cx="0"
-                    cy="0"
-                    r={rDisc * 0.72}
-                    fill="none"
-                    stroke="#f59e0b"
-                    strokeWidth="1.2"
-                    strokeDasharray="2,2"
-                    opacity="0.85"
-                  />
-                  <circle
-                    cx="0"
-                    cy="0"
-                    r={rDisc * 0.42}
-                    fill="none"
-                    stroke="#fbbf24"
-                    strokeWidth="1"
-                    strokeDasharray="1.5,1.5"
-                    opacity="0.9"
-                  />
-                  <circle cx="0" cy="0" r={2.5} fill="#fef08a" />
-
-                  {/* Tiny glittering dew sparkle */}
-                  {localProg > 0.8 && (
-                    <circle cx={-rDisc * 0.5} cy={-rDisc * 0.5} r="1.5" fill="#ffffff" opacity="0.9" />
-                  )}
+                  <use href="#sunflowerBloomSymbol" />
                 </g>
               );
             })}
@@ -481,3 +457,5 @@ export const SunflowerTree: React.FC<SunflowerTreeProps> = ({ state, onFlowerCli
     </div>
   );
 };
+
+export const SunflowerTree = React.memo(SunflowerTreeComponent);

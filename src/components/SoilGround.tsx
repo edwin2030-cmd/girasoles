@@ -6,7 +6,7 @@ interface SoilGroundProps {
   rootLength: number; // 0 to 1 progress of root penetration
 }
 
-export const SoilGround: React.FC<SoilGroundProps> = ({ visible, rootLength }) => {
+const SoilGroundComponent: React.FC<SoilGroundProps> = ({ visible, rootLength }) => {
   return (
     <div
       className={`absolute bottom-0 left-0 right-0 w-full pointer-events-none transition-opacity duration-1000 z-10 ${
@@ -139,3 +139,5 @@ export const SoilGround: React.FC<SoilGroundProps> = ({ visible, rootLength }) =
     </div>
   );
 };
+
+export const SoilGround = React.memo(SoilGroundComponent);

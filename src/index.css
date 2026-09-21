@@ -72,3 +72,67 @@ html, body, #root {
 .animate-float-gentle {
   animation: floatGentle 5s ease-in-out infinite;
 }
+
+/* GPU-accelerated smooth organic swaying (0% CPU, 0 React re-renders) */
+@keyframes treeBreezeOrganic {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  30% {
+    transform: rotate(1.5deg);
+  }
+  75% {
+    transform: rotate(-1.2deg);
+  }
+}
+
+@keyframes flowerSwayVarA {
+  0%, 100% {
+    transform: rotate(-2.6deg);
+  }
+  50% {
+    transform: rotate(2.4deg);
+  }
+}
+
+@keyframes flowerSwayVarB {
+  0%, 100% {
+    transform: rotate(2.8deg);
+  }
+  50% {
+    transform: rotate(-2.2deg);
+  }
+}
+
+@keyframes flowerSwayVarC {
+  0%, 100% {
+    transform: rotate(-1.8deg);
+  }
+  50% {
+    transform: rotate(2.9deg);
+  }
+}
+
+.animate-tree-sway {
+  transform-origin: 360px 690px;
+  animation: treeBreezeOrganic 6.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-sway-a {
+  transform-origin: 75px 335px;
+  animation: flowerSwayVarA 4.8s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-sway-b {
+  transform-origin: 75px 335px;
+  animation: flowerSwayVarB 5.4s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-sway-c {
+  transform-origin: 75px 335px;
+  animation: flowerSwayVarC 4.2s ease-in-out infinite;
+  will-change: transform;
+}

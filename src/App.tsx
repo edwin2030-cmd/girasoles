@@ -13,6 +13,7 @@ import { WishesPanel } from './components/Panels/WishesPanel';
 import { GardenPanel } from './components/Panels/GardenPanel';
 import { NavBar } from './components/Panels/NavBar';
 import { ActivePanel } from './types';
+import { FastForward, Zap } from 'lucide-react';
 
 export default function App() {
   // Configurable dedication texts for Génesis 16th Birthday
@@ -53,14 +54,45 @@ export default function App() {
   const [gardenStarted, setGardenStarted] = useState(false);
   const [gardenProgress, setGardenProgress] = useState(0);
   const [messageVisible, setMessageVisible] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
+  const [animSpeed, setAnimSpeed] = useState<number>(1.0);
 
   // References
   const animFrameRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(Date.now());
 
+  // Fast-forward / Skip directly to full bloom and birthday card
+  const handleSkipIntro = useCallback(() => {
+    if (animFrameRef.current) {
+      cancelAnimationFrame(animFrameRef.current);
+      animFrameRef.current = null;
+    }
+    setFallingFlower({
+      visible: false,
+      progress: 1,
+      landingGlow: 0,
+    });
+    setRootLength(1);
+    setGardenStarted(true);
+    setGardenProgress(1);
+    setTreeState({
+      trunkProgress: 1,
+      branchProgress: 1,
+      bloomProgress: 1,
+      sparkleBurst: true,
+    });
+    setMessageVisible(true);
+    setActivePanel('letter');
+    setTimeout(() => {
+      setTreeState((prev) => ({ ...prev, sparkleBurst: false }));
+    }, 1200);
+  }, []);
+
   // Restart complete animation sequence from falling flower
   const startFullSequence = useCallback(() => {
+    if (animFrameRef.current) {
+      cancelAnimationFrame(animFrameRef.current);
+      animFrameRef.current = null;
+    }
     setSoilVisible(true);
     setFallingFlower({
       visible: true,
@@ -72,7 +104,6 @@ export default function App() {
       branchProgress: 0,
       bloomProgress: 0,
       sparkleBurst: false,
-      swayAngle: 0,
     });
     setRootLength(0);
     setGardenStarted(false);
@@ -83,44 +114,33 @@ export default function App() {
     startTimeRef.current = Date.now();
   }, []);
 
-  // Main Animation Orchestrator
+  // Main High-Performance Animation Orchestrator
   useEffect(() => {
     startFullSequence();
 
-    const speed = APP_CONFIG.growthSpeed;
+    const speed = APP_CONFIG.growthSpeed * animSpeed;
     const dur = APP_CONFIG.durations;
 
-    // Timeline Calculation (ms)
-    // 1. Flower falls from sky to soil
-    const T_FALL_START = 200 / speed;
-    const T_FALL_END = T_FALL_START + dur.flowerFallDuration / speed; // ~3200ms
-    // 2. Roots penetrate soil
-    const T_ROOTS_END = T_FALL_END + 1200 / speed;
-    // 3. Tree trunk rises vertically
-    const T_TRUNK_START = T_FALL_END + 400 / speed;
-    const T_TRUNK_END = T_TRUNK_START + dur.trunkGrowth / speed; // ~3000ms
-    // 4. Tree branches expand outwards widely ("que después se amplie")
-    const T_BRANCH_START = T_TRUNK_START + (dur.trunkGrowth * 0.45) / speed;
-    const T_BRANCH_END = T_BRANCH_START + dur.branchExpand / speed; // ~3500ms
-    // 5. Sunflowers bloom across branches & crown
-    const T_BLOOM_START = T_BRANCH_START + (dur.branchExpand * 0.4) / speed;
-    const T_BLOOM_END = T_BLOOM_START + dur.bloomDuration / speed; // ~3000ms
-    // 6. Surrounding sunflower garden emerges
-    const T_GARDEN_START = T_BLOOM_START + 800 / speed;
-    const T_GARDEN_END = T_GARDEN_START + 2500 / speed;
-    // 7. Birthday card view expands
+    // Timeline Calculation (ms) - Dynamic, snappy & lively
+    const T_FALL_START = dur.flowerFallDelay / speed;
+    const T_FALL_END = T_FALL_START + dur.flowerFallDuration / speed;
+    const T_ROOTS_END = T_FALL_END + dur.rootGrowth / speed;
+    const T_TRUNK_START = T_FALL_END + 150 / speed;
+    const T_TRUNK_END = T_TRUNK_START + dur.trunkGrowth / speed;
+    const T_BRANCH_START = T_TRUNK_START + (dur.trunkGrowth * 0.35) / speed;
+    const T_BRANCH_END = T_BRANCH_START + dur.branchExpand / speed;
+    const T_BLOOM_START = T_BRANCH_START + (dur.branchExpand * 0.35) / speed;
+    const T_BLOOM_END = T_BLOOM_START + dur.bloomDuration / speed;
+    const T_GARDEN_START = T_BLOOM_START + 250 / speed;
+    const T_GARDEN_END = T_GARDEN_START + 1200 / speed;
     const T_MESSAGE_START = T_BLOOM_END + dur.messageDelay / speed;
+    const T_TOTAL_END = T_MESSAGE_START + 500 / speed;
 
     let sparkleTriggered = false;
 
     const tick = () => {
       const now = Date.now();
       const elapsed = now - startTimeRef.current;
-      const tSec = elapsed / 1000;
-      setCurrentTime(tSec);
-
-      // Organic wind swaying
-      const breezeSway = Math.sin(tSec * 1.6) * 1.8 + Math.cos(tSec * 0.9) * 0.8;
 
       // 1. Initial Falling Sunflower
       if (elapsed < T_FALL_START) {
@@ -130,15 +150,14 @@ export default function App() {
         setFallingFlower({
           visible: true,
           progress: p,
-          landingGlow: p > 0.85 ? (p - 0.85) / 0.15 : 0,
+          landingGlow: p > 0.82 ? (p - 0.82) / 0.18 : 0,
         });
       } else {
-        // Landed & sprouted
         const afterLanding = elapsed - T_FALL_END;
         setFallingFlower({
-          visible: afterLanding < 1400,
+          visible: afterLanding < 800,
           progress: 1,
-          landingGlow: Math.max(0, 1 - afterLanding / 1000),
+          landingGlow: Math.max(0, 1 - afterLanding / 600),
         });
       }
 
@@ -171,7 +190,7 @@ export default function App() {
           isSparkle = true;
           setTimeout(() => {
             setTreeState((prev) => ({ ...prev, sparkleBurst: false }));
-          }, 1500);
+          }, 1200);
         }
       }
 
@@ -182,7 +201,6 @@ export default function App() {
         branchProgress: branchProg,
         bloomProgress: bloomProg,
         sparkleBurst: isSparkle ? true : prev.sparkleBurst,
-        swayAngle: breezeSway,
       }));
 
       // 6. Surrounding Sunflower Garden
@@ -197,7 +215,22 @@ export default function App() {
         setMessageVisible(true);
       }
 
-      animFrameRef.current = requestAnimationFrame(tick);
+      // Stop requesting animation frames once sequence reaches completion (frees 100% CPU!)
+      if (elapsed < T_TOTAL_END) {
+        animFrameRef.current = requestAnimationFrame(tick);
+      } else {
+        // Guarantee 100% final state
+        setRootLength(1);
+        setGardenStarted(true);
+        setGardenProgress(1);
+        setMessageVisible(true);
+        setTreeState((prev) => ({
+          ...prev,
+          trunkProgress: 1,
+          branchProgress: 1,
+          bloomProgress: 1,
+        }));
+      }
     };
 
     animFrameRef.current = requestAnimationFrame(tick);
@@ -207,7 +240,7 @@ export default function App() {
         cancelAnimationFrame(animFrameRef.current);
       }
     };
-  }, [startFullSequence]);
+  }, [startFullSequence, animSpeed]);
 
   // Magic Garden Action Triggers
   const handleTriggerPetalRain = () => {
@@ -258,6 +291,31 @@ export default function App() {
       {/* 2. Top-Right Audio Controller with Starboy Instrumental Beat */}
       <AudioControl />
 
+      {/* Quick Skip & Speed Pill Bar during Intro */}
+      {!messageVisible && (
+        <div className="absolute top-5 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 bg-stone-900/80 backdrop-blur-md border border-amber-500/40 rounded-full px-3 py-1.5 shadow-xl shadow-black/50 text-xs font-medium text-amber-100">
+          <button
+            type="button"
+            onClick={handleSkipIntro}
+            className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-stone-950 font-semibold shadow transition-all active:scale-95 cursor-pointer"
+            title="Saltar animación y ver el mensaje directamente"
+          >
+            <FastForward className="w-3.5 h-3.5" />
+            <span>Saltar animación</span>
+          </button>
+          <span className="text-amber-500/40">|</span>
+          <button
+            type="button"
+            onClick={() => setAnimSpeed((prev) => (prev === 1.0 ? 1.8 : 1.0))}
+            className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-950/60 hover:bg-amber-900/70 text-amber-200 transition-colors cursor-pointer"
+            title="Acelerar velocidad de animación"
+          >
+            <Zap className="w-3 h-3 text-yellow-400" />
+            <span>{animSpeed > 1 ? '2x Rápido' : '1x Normal'}</span>
+          </button>
+        </div>
+      )}
+
       {/* 3. Initial Falling Yellow Sunflower Sequence */}
       <FallingSunflowerIntro
         visible={fallingFlower.visible}
@@ -272,7 +330,6 @@ export default function App() {
       <GardenFlowers
         gardenStarted={gardenStarted}
         gardenProgress={gardenProgress}
-        currentTime={currentTime}
       />
 
       {/* 6. Fertile Soil Mound & Golden Sprouting Roots */}

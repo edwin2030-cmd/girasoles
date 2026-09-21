@@ -32,6 +32,7 @@ export interface RomanticAppConfig {
   particleSpeed: number;
   buttons: {
     restartText: string;
+    skipText?: string;
     musicPlayText: string;
     musicPauseText: string;
     customizeText: string;
@@ -93,6 +94,7 @@ export const APP_CONFIG: RomanticAppConfig = {
 
   buttons: {
     restartText: "Volver a ver",
+    skipText: "Ver mensaje ya",
     musicPlayText: "Starboy Beat",
     musicPauseText: "Silenciar",
     customizeText: "Dedicatoria",
@@ -106,15 +108,15 @@ export const APP_CONFIG: RomanticAppConfig = {
   },
 
   durations: {
-    flowerFallDelay: 600,       // Pequeña pausa inicial
-    flowerFallDuration: 4200,   // La flor amarilla desciende lentamente girando
-    seedLandingGlow: 1000,      // Resplandor al tocar tierra
-    rootGrowth: 1400,          // Raíces penetran la tierra
-    trunkGrowth: 3200,         // El tronco del árbol crece hacia arriba
-    branchExpand: 2800,        // Las ramas se abren y amplían a los lados
-    bloomDuration: 3500,       // Florecen todos los girasoles del árbol
-    messageDelay: 1000,        // Aparece la carta de cumpleaños
-    typewriterSpeed: 32,
+    flowerFallDelay: 120,       // Inicio ágil y fluido
+    flowerFallDuration: 1800,   // Descenso elegante y dinámico (rápido y vistoso)
+    seedLandingGlow: 450,       // Resplandor de impacto en tierra
+    rootGrowth: 700,            // Raíces brotan rápidamente
+    trunkGrowth: 1500,          // Tronco crece ágilmente
+    branchExpand: 1400,         // Ramas se expanden a los lados
+    bloomDuration: 1500,        // Florecen todos los girasoles dorados
+    messageDelay: 400,          // Aparición rápida de la carta de cumpleaños
+    typewriterSpeed: 16,        // Efecto máquina de escribir fluido y dinámico
   },
 
   wishes16: [

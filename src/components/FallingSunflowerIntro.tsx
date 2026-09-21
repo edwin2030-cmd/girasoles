@@ -6,7 +6,7 @@ interface FallingSunflowerIntroProps {
   landingGlow: number; // 0 to 1
 }
 
-export const FallingSunflowerIntro: React.FC<FallingSunflowerIntroProps> = ({
+const FallingSunflowerIntroComponent: React.FC<FallingSunflowerIntroProps> = ({
   progress,
   visible,
   landingGlow,
@@ -41,11 +41,11 @@ export const FallingSunflowerIntro: React.FC<FallingSunflowerIntroProps> = ({
       {/* The falling sunflower */}
       {progress < 1.05 && (
         <div
-          className="absolute left-1/2 pointer-events-none transition-transform"
+          className="absolute left-1/2 pointer-events-none"
           style={{
             top: `${currentYPercent}%`,
             transform: `translate(calc(-50% + ${swayX}px), -50%) rotate(${rotation}deg) scale(${scale})`,
-            filter: 'drop-shadow(0 0 16px rgba(251, 191, 36, 0.75))',
+            willChange: 'transform, top',
           }}
         >
           {/* Sunflower SVG */}
@@ -131,3 +131,5 @@ export const FallingSunflowerIntro: React.FC<FallingSunflowerIntroProps> = ({
     </div>
   );
 };
+
+export const FallingSunflowerIntro = React.memo(FallingSunflowerIntroComponent);

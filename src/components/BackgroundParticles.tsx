@@ -9,7 +9,7 @@ interface BackgroundParticlesProps {
   firefliesActive?: boolean;
 }
 
-export const BackgroundParticles: React.FC<BackgroundParticlesProps> = ({
+const BackgroundParticlesComponent: React.FC<BackgroundParticlesProps> = ({
   speedMultiplier = 1,
   extraPetalRain = false,
   windBurst = false,
@@ -61,7 +61,7 @@ export const BackgroundParticles: React.FC<BackgroundParticlesProps> = ({
       });
     }
 
-    // Helper to draw an organic curved sunflower petal
+    // Helper to draw an organic curved sunflower petal (optimized for 60fps)
     const drawSunflowerPetal = (
       context: CanvasRenderingContext2D,
       x: number,
@@ -80,9 +80,7 @@ export const BackgroundParticles: React.FC<BackgroundParticlesProps> = ({
       context.bezierCurveTo(-size * 0.35, size * 0.5, -size * 0.45, -size * 0.3, 0, -size);
       context.closePath();
       context.fillStyle = color;
-      context.globalAlpha = opacity * 0.88;
-      context.shadowColor = color;
-      context.shadowBlur = 8;
+      context.globalAlpha = opacity * 0.9;
       context.fill();
 
       // Subtle center vein
@@ -90,14 +88,14 @@ export const BackgroundParticles: React.FC<BackgroundParticlesProps> = ({
       context.moveTo(0, -size * 0.8);
       context.lineTo(0, size * 0.7);
       context.strokeStyle = '#fef9c3';
-      context.lineWidth = 0.8;
-      context.globalAlpha = opacity * 0.5;
+      context.lineWidth = 0.75;
+      context.globalAlpha = opacity * 0.45;
       context.stroke();
 
       context.restore();
     };
 
-    // Helper to draw a 4-point sparkle star
+    // Helper to draw a 4-point sparkle star (ultra-fast fill without shadow blur)
     const drawSparkle = (
       context: CanvasRenderingContext2D,
       x: number,
@@ -129,44 +127,43 @@ export const BackgroundParticles: React.FC<BackgroundParticlesProps> = ({
       context.closePath();
       context.fillStyle = color;
       context.globalAlpha = opacity;
-      context.shadowColor = color;
-      context.shadowBlur = 8;
       context.fill();
+
+      // Inner bright core
+      context.beginPath();
+      context.arc(0, 0, size * 0.4, 0, Math.PI * 2);
+      context.fillStyle = '#ffffff';
+      context.globalAlpha = opacity * 0.9;
+      context.fill();
+
       context.restore();
     };
 
     let tick = 0;
 
+    // Pre-create background gradient once or on resize
+    let bgGrad = ctx.createLinearGradient(0, 0, 0, height);
+    bgGrad.addColorStop(0, APP_CONFIG.colors.backgroundStart);
+    bgGrad.addColorStop(0.55, APP_CONFIG.colors.backgroundMid);
+    bgGrad.addColorStop(1, APP_CONFIG.colors.backgroundEnd);
+
     const render = () => {
-      tick += 0.015;
+      tick += 0.02;
       ctx.clearRect(0, 0, width, height);
 
       // Deep golden twilight sky gradient
-      const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
-      bgGrad.addColorStop(0, APP_CONFIG.colors.backgroundStart);
-      bgGrad.addColorStop(0.55, APP_CONFIG.colors.backgroundMid);
-      bgGrad.addColorStop(1, APP_CONFIG.colors.backgroundEnd);
+      ctx.globalAlpha = 1;
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, width, height);
 
-      // Warm radial sun glow centered around the tree crown
-      const radialGlow = ctx.createRadialGradient(
-        width * 0.5,
-        height * 0.65,
-        30,
-        width * 0.5,
-        height * 0.65,
-        Math.max(width, height) * 0.7
-      );
-      radialGlow.addColorStop(0, 'rgba(251, 191, 36, 0.22)');
-      radialGlow.addColorStop(0.4, 'rgba(217, 119, 6, 0.1)');
-      radialGlow.addColorStop(0.8, 'rgba(120, 53, 15, 0.04)');
-      radialGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
-      ctx.fillStyle = radialGlow;
-      ctx.fillRect(0, 0, width, height);
+      // Warm ambient sun glow
+      ctx.beginPath();
+      ctx.arc(width * 0.5, height * 0.62, Math.min(width, height) * 0.45, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(251, 191, 36, 0.08)';
+      ctx.fill();
 
       // Twinkling golden stars in the night sky
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < 28; i++) {
         const starX = (width * ((i * 41) % 100)) / 100;
         const starY = (height * 0.45 * ((i * 29) % 100)) / 100;
         const starBrightness = 0.2 + 0.35 * Math.sin(tick * 1.8 + i);
@@ -177,22 +174,24 @@ export const BackgroundParticles: React.FC<BackgroundParticlesProps> = ({
         ctx.fill();
       }
 
-      // Fireflies wandering in the warm garden air
+      // Fireflies wandering in the warm garden air (high-performance rendering)
       if (firefliesActive) {
-        for (let j = 0; j < 14; j++) {
+        for (let j = 0; j < 12; j++) {
           const fx = width * 0.5 + Math.sin(tick * 0.8 + j * 1.5) * (width * 0.38);
           const fy = height * 0.6 + Math.cos(tick * 1.1 + j * 2.2) * (height * 0.25);
           const fGlow = 0.3 + 0.5 * Math.sin(tick * 3 + j);
 
-          ctx.save();
           ctx.beginPath();
-          ctx.arc(fx, fy, 2.5, 0, Math.PI * 2);
+          ctx.arc(fx, fy, 4.5, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(251, 191, 36, 0.35)';
+          ctx.globalAlpha = Math.max(0, fGlow * 0.6);
+          ctx.fill();
+
+          ctx.beginPath();
+          ctx.arc(fx, fy, 2, 0, Math.PI * 2);
           ctx.fillStyle = '#fef08a';
           ctx.globalAlpha = Math.max(0, fGlow);
-          ctx.shadowColor = '#fbbf24';
-          ctx.shadowBlur = 12;
           ctx.fill();
-          ctx.restore();
         }
       }
 
@@ -254,3 +253,5 @@ export const BackgroundParticles: React.FC<BackgroundParticlesProps> = ({
     />
   );
 };
+
+export const BackgroundParticles = React.memo(BackgroundParticlesComponent);
