@@ -46,7 +46,7 @@ export interface RomanticAppConfig {
     promptDelayMs: number;
     promptButtonText: string;
     letters: Array<{
-      id: 'alicia' | 'elianis' | 'joice';
+      id: 'alicia' | 'elianis' | 'joice' | 'todas' | string;
       name: string;
       defaultPhotoUrl: string;
       message: string;
@@ -147,7 +147,7 @@ Te quiero muchísimo mi xixi.`,
         name: "Joice",
         defaultPhotoUrl: "/joice.jpg",
         prevButtonText: "← Anterior",
-        nextButtonText: "Finalizar",
+        nextButtonText: "Avanzar →",
         message: `Feliz cumpleaños, mi Gene.
 
 Hoy quiero desearle un feliz cumpleaños a una de las personas que forman parte de mi vida. Más que una amiga, eres una hermana más.
@@ -159,6 +159,20 @@ Aunque antes no nos entendíamos muy bien, lograste convertirte en una persona m
 Quiero que Dios te regale un maravilloso cumpleaños y que te permita seguir compartiendo muchos años junto a todas las personas que te amamos, te queremos y estamos agradecidos de que estés en nuestras vidas.
 
 Te quiero muchísimo, Génesis.`,
+      },
+      {
+        id: "todas",
+        name: "Todas",
+        defaultPhotoUrl: "/todas.jpg",
+        prevButtonText: "← Anterior",
+        nextButtonText: "Finalizar",
+        message: `Para nuestra Génesis favorita.
+
+Celebrando cada risa, cada aventura y todo lo que hemos compartido juntas.
+
+Gracias por ser esa luz y alegría tan bonita en nuestras vidas.
+
+¡Te amamos muchísimo y te deseamos el más hermoso cumpleaños!`,
       },
     ],
     finalScreen: {
