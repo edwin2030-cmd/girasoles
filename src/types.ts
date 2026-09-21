@@ -40,15 +40,7 @@ export interface Particle {
   rotationSpeed: number;
 }
 
-export interface BirthdayWish {
-  id: number;
-  title: string;
-  message: string;
-  icon: string;
-  opened: boolean;
-}
-
-export type ActivePanel = 'letter' | 'wishes' | 'garden' | 'customize';
+export type ActivePanel = 'letter' | 'garden';
 
 export interface TouchRipple {
   id: number;

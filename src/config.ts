@@ -30,21 +30,7 @@ export interface RomanticAppConfig {
   gardenFlowerCount: number;
   growthSpeed: number;
   particleSpeed: number;
-  buttons: {
-    restartText: string;
-    skipText?: string;
-    musicPlayText: string;
-    musicPauseText: string;
-    customizeText: string;
-  };
-  music: {
-    audioFilePath: string;
-    trackTitle: string;
-    defaultVolume: number;
-    loop: boolean;
-  };
   durations: {
-    flowerFallDelay: number;
     flowerFallDuration: number;
     seedLandingGlow: number;
     rootGrowth: number;
@@ -54,12 +40,6 @@ export interface RomanticAppConfig {
     messageDelay: number;
     typewriterSpeed: number;
   };
-  wishes16: Array<{
-    id: number;
-    title: string;
-    message: string;
-    emoji: string;
-  }>;
 }
 
 export const APP_CONFIG: RomanticAppConfig = {
@@ -67,155 +47,41 @@ export const APP_CONFIG: RomanticAppConfig = {
   recipientAge: 16,
 
   message: {
-    badge: "🌻 DULCES 16 • GÉNESIS ✨",
-    greeting: "¡Feliz Cumpleaños 16, Génesis! 🌻💛",
-    body: "Dicen que los girasoles siempre buscan la luz del sol, pero amigas como tú son la luz que alegra los días de todos a su alrededor. ¡Felices 16 años! Que este nuevo año de vida esté lleno de risas cómplices, sueños gigantes cumplidos y recuerdos inolvidables. ¡Gracias por tu valiosa amistad, por tu energía tan bonita y por brillar siempre con tanta luz propia!",
-    closing: "Con mucho cariño y admiración en tus 16 años.",
-    sender: "Tu amigo/a que siempre te desea lo mejor 🌟",
+    badge: "DULCES 16 • GÉNESIS",
+    greeting: "¡Feliz cumpleaños, Génesis!",
+    body: "Espero que tengas un día muy bonito y lleno de momentos especiales. Eres una persona muy bonita, con una energía increíble, y mereces que te pasen cosas muy buenas.\n\nDisfruta mucho tus 16 y que este nuevo año venga lleno de sonrisas, sueños cumplidos y muchas cosas lindas.\n\n¡Feliz cumpleaños!",
+    closing: "Con mucho cariño, te deseo lo mejor siempre.",
+    sender: "",
   },
 
   colors: {
-    backgroundStart: "#090503",  // Noche profunda en tonos ámbar y bronce
-    backgroundMid: "#180c04",    // Resplandor cálido de atardecer dorado
-    backgroundEnd: "#0d0602",    // Suelo oscuro y fértil
-    soilColor: "#221105",        // Tierra enriquecida
-    soilHighlight: "#452206",    // Relieve dorado de la tierra
+    backgroundStart: "#fbf8f3",  // Crema marfil cálido y elegante
+    backgroundMid: "#f5eee4",    // Beige suave y luminoso
+    backgroundEnd: "#e8ded0",    // Arena beige cálida
+    soilColor: "#63432d",        // Tierra fértil en tono café cálido
+    soilHighlight: "#885f42",    // Relieve suave de la tierra
     sunflowerYellow: "#fbbf24",  // Amarillo radiante de girasol
-    sunflowerAmber: "#f59e0b",   // Ámbar profundo
+    sunflowerAmber: "#f59e0b",   // Ámbar dorado
     sunflowerDarkCenter: "#451a03", // Corazón de semillas de girasol
-    glowAmbient: "rgba(251, 191, 36, 0.28)",
-    particleSparkle: "#fef08a",  // Destellos dorados cálidos
-    particlePetal: "#facc15",    // Pétalos de girasol flotantes
+    glowAmbient: "rgba(245, 158, 11, 0.15)",
+    particleSparkle: "#f59e0b",  // Destellos dorados cálidos
+    particlePetal: "#eab308",    // Pétalos dorados flotantes
   },
 
   gardenFlowerCount: 16,
   growthSpeed: 1.0,
   particleSpeed: 1.0,
 
-  buttons: {
-    restartText: "Volver a ver",
-    skipText: "Ver mensaje ya",
-    musicPlayText: "Starboy Beat",
-    musicPauseText: "Silenciar",
-    customizeText: "Dedicatoria",
-  },
-
-  music: {
-    audioFilePath: "/music.mp3",
-    trackTitle: "The Weeknd - Starboy (Instrumental Beat)",
-    defaultVolume: 0.65,
-    loop: true,
-  },
-
   durations: {
-    flowerFallDelay: 120,       // Inicio ágil y fluido
-    flowerFallDuration: 1800,   // Descenso elegante y dinámico (rápido y vistoso)
-    seedLandingGlow: 450,       // Resplandor de impacto en tierra
-    rootGrowth: 700,            // Raíces brotan rápidamente
-    trunkGrowth: 1500,          // Tronco crece ágilmente
-    branchExpand: 1400,         // Ramas se expanden a los lados
-    bloomDuration: 1500,        // Florecen todos los girasoles dorados
-    messageDelay: 400,          // Aparición rápida de la carta de cumpleaños
-    typewriterSpeed: 16,        // Efecto máquina de escribir fluido y dinámico
+    flowerFallDuration: 1900,   // Descenso fluido y elegante de la flor
+    seedLandingGlow: 500,       // Resplandor dorado de impacto en tierra
+    rootGrowth: 750,            // Raíces brotan en la tierra
+    trunkGrowth: 1500,          // Tronco crece con fluidez
+    branchExpand: 1500,         // Ramas se expanden en forma de corazón
+    bloomDuration: 1600,        // Florecen los pequeños girasoles
+    messageDelay: 450,          // Aparición de la carta
+    typewriterSpeed: 16,        // Efecto máquina de escribir fluido
   },
-
-  wishes16: [
-    {
-      id: 1,
-      title: "Risas Interminables",
-      message: "Que nunca falte una carcajada sincera que te reinicie el día y te llene de felicidad.",
-      emoji: "😂",
-    },
-    {
-      id: 2,
-      title: "Luz Auténtica",
-      message: "Que sigas iluminando cada lugar al que llegas con tu personalidad única y brillante.",
-      emoji: "☀️",
-    },
-    {
-      id: 3,
-      title: "Aventuras Épicas",
-      message: "Que tus 16 años estén repletos de viajes, anécdotas locas y momentos memorables.",
-      emoji: "🚀",
-    },
-    {
-      id: 4,
-      title: "Amistad Incondicional",
-      message: "Saber que siempre contarás con amigos verdaderos que te apoyen en las buenas y las malas.",
-      emoji: "🤝",
-    },
-    {
-      id: 5,
-      title: "Sueños Gigantes",
-      message: "Que cada proyecto, pasión y meta que te propongas este año empiece a hacerse realidad.",
-      emoji: "🎯",
-    },
-    {
-      id: 6,
-      title: "Paz en el Corazón",
-      message: "Días de tranquilidad absoluta, serenidad y balance para disfrutar cada segundo.",
-      emoji: "🕊️",
-    },
-    {
-      id: 7,
-      title: "Música que Inspire",
-      message: "Las mejores canciones acompañando cada paso de tu vida, creando tu soundtrack perfecto.",
-      emoji: "🎧",
-    },
-    {
-      id: 8,
-      title: "Seguridad y Confianza",
-      message: "Que jamás dudes de lo increíble, fuerte, talentosa e inteligente que eres.",
-      emoji: "💪",
-    },
-    {
-      id: 9,
-      title: "Momentos Mágicos",
-      message: "Atardeceres dorados, pláticas nocturnas y sorpresas que te alegren el alma.",
-      emoji: "✨",
-    },
-    {
-      id: 10,
-      title: "Salud y Energía",
-      message: "Fuerza y vitalidad desbordante para vivir al máximo cada una de tus pasiones.",
-      emoji: "⚡",
-    },
-    {
-      id: 11,
-      title: "Abrazos Sinceros",
-      message: "De esos abrazos cálidos que reconfortan el espíritu y te recuerdan lo querida que eres.",
-      emoji: "🫂",
-    },
-    {
-      id: 12,
-      title: "Nuevas Pasiones",
-      message: "Descubrir talentos ocultos, hobbies divertidos y caminos que te apasionen por completo.",
-      emoji: "🎨",
-    },
-    {
-      id: 13,
-      title: "Días Soleados",
-      message: "Que incluso cuando el cielo se nuble, tú lleves siempre un campo de girasoles por dentro.",
-      emoji: "🌻",
-    },
-    {
-      id: 14,
-      title: "Gente que Sume",
-      message: "Rodeada siempre de personas leales, cariñosas y llenas de buena vibra para tu vida.",
-      emoji: "💛",
-    },
-    {
-      id: 15,
-      title: "Dulces 16 Dorados",
-      message: "Celebrar estos dieciséis años con orgullo, libertad y la emoción de una nueva etapa.",
-      emoji: "👑",
-    },
-    {
-      id: 16,
-      title: "¡El Mejor Año de tu Vida!",
-      message: "Que esta vuelta al sol supere todas tus expectativas y sea inolvidable, Génesis.",
-      emoji: "🎉",
-    },
-  ],
 };
+
 

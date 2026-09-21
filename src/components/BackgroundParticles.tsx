@@ -35,23 +35,23 @@ const BackgroundParticlesComponent: React.FC<BackgroundParticlesProps> = ({
 
     window.addEventListener('resize', handleResize);
 
-    // Generate golden sunflower petals, solar dust and sparkles
-    const count = Math.min(Math.floor((width * height) / 12000), 80) + (extraPetalRain ? 45 : 0);
+    // Generate warm golden sunflower petals and sunlit pollen motes
+    const count = Math.min(Math.floor((width * height) / 14000), 75) + (extraPetalRain ? 45 : 0);
     const particles: Particle[] = [];
 
-    const petalColors = ['#f59e0b', '#fbbf24', '#facc15', '#eab308', '#fef08a'];
-    const dustColors = ['#fef08a', '#fde047', '#fed7aa', '#ffffff', '#fef9c3'];
+    const petalColors = ['#f59e0b', '#fbbf24', '#facc15', '#eab308', '#d97706'];
+    const dustColors = ['#d97706', '#b45309', '#ca8a04', '#eab308', '#f59e0b'];
 
     for (let i = 0; i < count; i++) {
-      const isPetal = Math.random() < 0.35 || extraPetalRain;
+      const isPetal = Math.random() < 0.4 || extraPetalRain;
       particles.push({
         id: i,
         x: Math.random() * width,
         y: Math.random() * height,
-        size: isPetal ? Math.random() * 8 + 8 : Math.random() * 2.8 + 1,
-        speedX: ((Math.random() - 0.4) * 0.6 + (windBurst ? 1.8 : 0)) * speedMultiplier,
-        speedY: (isPetal ? Math.random() * 0.7 + 0.3 : -(Math.random() * 0.5 + 0.2)) * speedMultiplier,
-        opacity: Math.random() * 0.65 + 0.25,
+        size: isPetal ? Math.random() * 7 + 7 : Math.random() * 2.5 + 1.2,
+        speedX: ((Math.random() - 0.4) * 0.5 + (windBurst ? 1.8 : 0)) * speedMultiplier,
+        speedY: (isPetal ? Math.random() * 0.7 + 0.35 : -(Math.random() * 0.4 + 0.15)) * speedMultiplier,
+        opacity: Math.random() * 0.55 + 0.25,
         color: isPetal
           ? petalColors[Math.floor(Math.random() * petalColors.length)]
           : dustColors[Math.floor(Math.random() * dustColors.length)],
@@ -61,7 +61,7 @@ const BackgroundParticlesComponent: React.FC<BackgroundParticlesProps> = ({
       });
     }
 
-    // Helper to draw an organic curved sunflower petal (optimized for 60fps)
+    // Helper to draw an organic curved sunflower petal
     const drawSunflowerPetal = (
       context: CanvasRenderingContext2D,
       x: number,
@@ -87,15 +87,15 @@ const BackgroundParticlesComponent: React.FC<BackgroundParticlesProps> = ({
       context.beginPath();
       context.moveTo(0, -size * 0.8);
       context.lineTo(0, size * 0.7);
-      context.strokeStyle = '#fef9c3';
-      context.lineWidth = 0.75;
+      context.strokeStyle = '#fffbeb';
+      context.lineWidth = 0.65;
       context.globalAlpha = opacity * 0.45;
       context.stroke();
 
       context.restore();
     };
 
-    // Helper to draw a 4-point sparkle star (ultra-fast fill without shadow blur)
+    // Helper to draw a 4-point sparkle star
     const drawSparkle = (
       context: CanvasRenderingContext2D,
       x: number,
@@ -107,90 +107,73 @@ const BackgroundParticlesComponent: React.FC<BackgroundParticlesProps> = ({
       context.save();
       context.translate(x, y);
       context.beginPath();
-      const spikes = 4;
-      const step = Math.PI / spikes;
-      let rot = (Math.PI / 2) * 3;
-      const outerRadius = size * 2.2;
-      const innerRadius = size * 0.5;
-
-      context.moveTo(0, -outerRadius);
-      for (let i = 0; i < spikes; i++) {
-        let px = Math.cos(rot) * outerRadius;
-        let py = Math.sin(rot) * outerRadius;
-        context.lineTo(px, py);
-        rot += step;
-        px = Math.cos(rot) * innerRadius;
-        py = Math.sin(rot) * innerRadius;
-        context.lineTo(px, py);
-        rot += step;
-      }
+      context.moveTo(0, -size);
+      context.lineTo(size * 0.2, -size * 0.2);
+      context.lineTo(size, 0);
+      context.lineTo(size * 0.2, size * 0.2);
+      context.lineTo(0, size);
+      context.lineTo(-size * 0.2, size * 0.2);
+      context.lineTo(-size, 0);
+      context.lineTo(-size * 0.2, -size * 0.2);
       context.closePath();
       context.fillStyle = color;
-      context.globalAlpha = opacity;
-      context.fill();
-
-      // Inner bright core
-      context.beginPath();
-      context.arc(0, 0, size * 0.4, 0, Math.PI * 2);
-      context.fillStyle = '#ffffff';
       context.globalAlpha = opacity * 0.9;
       context.fill();
-
       context.restore();
     };
 
     let tick = 0;
 
-    // Pre-create background gradient once or on resize
+    // Pre-create background gradient
     let bgGrad = ctx.createLinearGradient(0, 0, 0, height);
     bgGrad.addColorStop(0, APP_CONFIG.colors.backgroundStart);
-    bgGrad.addColorStop(0.55, APP_CONFIG.colors.backgroundMid);
+    bgGrad.addColorStop(0.5, APP_CONFIG.colors.backgroundMid);
     bgGrad.addColorStop(1, APP_CONFIG.colors.backgroundEnd);
 
     const render = () => {
       tick += 0.02;
       ctx.clearRect(0, 0, width, height);
 
-      // Deep golden twilight sky gradient
+      // Warm beige background gradient
       ctx.globalAlpha = 1;
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, width, height);
 
-      // Warm ambient sun glow
+      // Subtle warm sunlit ambient glow in upper center
       ctx.beginPath();
-      ctx.arc(width * 0.5, height * 0.62, Math.min(width, height) * 0.45, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(251, 191, 36, 0.08)';
+      ctx.arc(width * 0.5, height * 0.45, Math.min(width, height) * 0.5, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(245, 158, 11, 0.07)';
       ctx.fill();
 
-      // Twinkling golden stars in the night sky
-      for (let i = 0; i < 28; i++) {
-        const starX = (width * ((i * 41) % 100)) / 100;
-        const starY = (height * 0.45 * ((i * 29) % 100)) / 100;
-        const starBrightness = 0.2 + 0.35 * Math.sin(tick * 1.8 + i);
-        ctx.fillStyle = i % 2 === 0 ? '#fef08a' : '#ffffff';
-        ctx.globalAlpha = Math.max(0.05, starBrightness);
+      // Soft sunlit pollen dust floating gently in the air
+      for (let i = 0; i < 24; i++) {
+        const dustX = (width * ((i * 37) % 100)) / 100 + Math.sin(tick * 0.6 + i) * 12;
+        const dustY = (height * 0.65 * ((i * 23) % 100)) / 100 + Math.cos(tick * 0.5 + i) * 10;
+        const dustBrightness = 0.15 + 0.25 * Math.sin(tick * 1.5 + i);
+        ctx.fillStyle = i % 2 === 0 ? '#d97706' : '#b45309';
+        ctx.globalAlpha = Math.max(0.04, dustBrightness * 0.4);
         ctx.beginPath();
-        ctx.arc(starX, starY, i % 4 === 0 ? 1.8 : 1.1, 0, Math.PI * 2);
+        ctx.arc(dustX, dustY, i % 3 === 0 ? 1.6 : 1.0, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      // Fireflies wandering in the warm garden air (high-performance rendering)
+      // Golden sparkles / fireflies in the warm air
       if (firefliesActive) {
-        for (let j = 0; j < 12; j++) {
+        for (let j = 0; j < 10; j++) {
           const fx = width * 0.5 + Math.sin(tick * 0.8 + j * 1.5) * (width * 0.38);
-          const fy = height * 0.6 + Math.cos(tick * 1.1 + j * 2.2) * (height * 0.25);
+          const fy = height * 0.5 + Math.cos(tick * 1.1 + j * 2.2) * (height * 0.28);
           const fGlow = 0.3 + 0.5 * Math.sin(tick * 3 + j);
 
           ctx.beginPath();
-          ctx.arc(fx, fy, 4.5, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(251, 191, 36, 0.35)';
-          ctx.globalAlpha = Math.max(0, fGlow * 0.6);
+          ctx.arc(fx, fy, 4, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(245, 158, 11, 0.28)';
+          ctx.globalAlpha = Math.max(0, fGlow * 0.5);
           ctx.fill();
 
           ctx.beginPath();
-          ctx.arc(fx, fy, 2, 0, Math.PI * 2);
-          ctx.fillStyle = '#fef08a';
-          ctx.globalAlpha = Math.max(0, fGlow);
+          ctx.arc(fx, fy, 1.8, 0, Math.PI * 2);
+          ctx.fillStyle = '#f59e0b';
+          ctx.globalAlpha = Math.max(0, fGlow * 0.8);
           ctx.fill();
         }
       }
@@ -226,11 +209,9 @@ const BackgroundParticlesComponent: React.FC<BackgroundParticlesProps> = ({
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
           ctx.fillStyle = p.color;
-          ctx.globalAlpha = pulseOpacity;
-          ctx.shadowColor = p.color;
-          ctx.shadowBlur = 6;
+          ctx.globalAlpha = pulseOpacity * 0.6;
           ctx.fill();
-          ctx.restore();
+          contextRestore: ctx.restore();
         }
       }
 

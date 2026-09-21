@@ -69,8 +69,9 @@ export const AudioControl: React.FC<AudioControlProps> = ({ onTogglePlay }) => {
 
       {/* Helper hint for mobile/first touch */}
       {!isInteracted && (
-        <div className="hidden md:flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-950/80 border border-amber-500/30 text-[10px] text-amber-300 animate-pulse pointer-events-none">
-          <span>🎵 Toca para activar la música</span>
+        <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-950/80 border border-amber-500/30 text-[10px] text-amber-300 animate-pulse pointer-events-none">
+          <Music className="w-3 h-3 text-amber-400" />
+          <span>Toca para activar la música</span>
         </div>
       )}
     </div>

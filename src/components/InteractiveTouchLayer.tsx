@@ -34,7 +34,14 @@ export const InteractiveTouchLayer: React.FC<InteractiveTouchLayerProps> = ({ on
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
-    if (target.closest('button') || target.closest('input') || target.closest('textarea') || target.closest('nav')) {
+    if (
+      target.closest('button') ||
+      target.closest('input') ||
+      target.closest('textarea') ||
+      target.closest('nav') ||
+      target.closest('[role="button"]') ||
+      target.closest('.group')
+    ) {
       return;
     }
 
