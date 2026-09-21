@@ -122,7 +122,19 @@ const RomanticLetterComponent: React.FC<RomanticLetterProps> = ({
         </h1>
 
         {/* Body Text with Typewriter and multi-line paragraph preservation */}
-        <div className="font-poetic text-base sm:text-lg text-stone-700 leading-relaxed min-h-[76px] transition-all px-1 sm:px-3 text-center whitespace-pre-line">
+        <div
+          id="romantic-letter-body"
+          onClick={() => {
+            if (!bodyDone) {
+              setDisplayedTitle(greetingText);
+              setDisplayedBody(bodyText);
+              setTitleDone(true);
+              setBodyDone(true);
+            }
+          }}
+          className="font-poetic text-base sm:text-lg text-stone-700 leading-relaxed min-h-[76px] transition-all px-1 sm:px-3 text-center whitespace-pre-line cursor-pointer select-text"
+          title={!bodyDone ? "Toca para mostrar todo el texto de una vez" : undefined}
+        >
           {displayedBody}
           {titleDone && !bodyDone && (
             <span className="animate-pulse text-amber-600 font-bold ml-0.5">|</span>
@@ -132,7 +144,7 @@ const RomanticLetterComponent: React.FC<RomanticLetterProps> = ({
         {/* Closing phrase & Sender */}
         <div
           className={`mt-4 pt-3 border-t border-amber-600/20 flex flex-col items-center justify-center gap-1 transition-opacity duration-1000 ${
-            bodyDone ? 'opacity-100' : 'opacity-0'
+            bodyDone ? 'opacity-100' : 'opacity-60'
           }`}
         >
           <div className="flex items-center gap-2">
@@ -149,16 +161,16 @@ const RomanticLetterComponent: React.FC<RomanticLetterProps> = ({
 
         {/* Interactive Actions */}
         <div
-          className={`mt-4 pt-1 flex flex-col sm:flex-row items-center justify-center gap-2.5 transition-opacity duration-700 ${
-            bodyDone ? 'opacity-100' : 'opacity-30 pointer-events-none'
-          }`}
+          id="romantic-letter-actions"
+          className="mt-4 pt-1 flex flex-col sm:flex-row items-center justify-center gap-2.5 transition-opacity duration-700 opacity-100"
         >
           {/* Main Next Button: "Ver más mensajes" (Section: Unos mensajes para ti) */}
           {onOpenFriendLetters && (
             <button
+              id="btn-open-friend-letters"
               type="button"
               onClick={onOpenFriendLetters}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold tracking-wide transition-all duration-500 cursor-pointer shadow-md ${
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold tracking-wide transition-all duration-500 cursor-pointer shadow-md min-h-[44px] ${
                 autoPromptVisible
                   ? 'bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 scale-105 shadow-[0_4px_15px_rgba(245,158,11,0.4)] animate-pulse'
                   : 'bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 active:scale-95 text-stone-950'
@@ -173,9 +185,10 @@ const RomanticLetterComponent: React.FC<RomanticLetterProps> = ({
 
           {/* Button: Minimize / View Garden */}
           <button
+            id="btn-view-garden"
             type="button"
             onClick={onClose}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-amber-500/20 hover:bg-amber-500/30 active:scale-95 border border-amber-600/35 text-amber-950 text-xs font-semibold tracking-wide transition-all cursor-pointer shadow-sm"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-amber-500/20 hover:bg-amber-500/30 active:scale-95 border border-amber-600/35 text-amber-950 text-xs font-semibold tracking-wide transition-all cursor-pointer shadow-sm min-h-[44px]"
             title="Minimizar para apreciar el árbol y las flores"
           >
             <Eye className="w-3.5 h-3.5 text-amber-700" />

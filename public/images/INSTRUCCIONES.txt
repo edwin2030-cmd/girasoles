@@ -1,0 +1,25 @@
+============================================================
+CARPETA DE FOTOGRAFÍAS PARA EL PROYECTO
+============================================================
+
+Para que tus fotografías personalizadas aparezcan en la página:
+
+1. Coloca tus archivos de imagen directamente en esta carpeta:
+   public/images/
+
+2. Nombres exactos que deben tener los archivos:
+   - todas.jpg    -> Fotografía grupal (se muestra en grande al inicio)
+   - alicia.jpg   -> Fotografía de Alicia
+   - elianis.jpg  -> Fotografía de Elianis
+   - joice.jpg    -> Fotografía de Joice
+
+3. Formato recomendado:
+   - Archivos JPG / JPEG estándar.
+   - Ya están configuradas con object-fit: cover, marco elegante,
+     bordes redondeados y sombra suave.
+
+4. Despliegue en Vercel:
+   - Al subir el proyecto a GitHub o desplegarlo en Vercel, todos los
+     archivos dentro de "public/" se sirven automáticamente en la raíz,
+     por lo que las rutas /images/alicia.jpg, etc. funcionarán al 100%
+     sin requerir Firebase ni servicios externos.

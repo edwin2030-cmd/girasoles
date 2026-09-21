@@ -1,8 +1,29 @@
 // ============================================================================
-// CONFIGURACIÓN
+// CONFIGURACIÓN DE LA EXPERIENCIA ROMÁNTICA Y CARTAS DE CUMPLEAÑOS
 // ============================================================================
-// En esta sección puedes personalizar fácilmente todos los aspectos de la
-// experiencia romántica: textos, colores, cantidad de flores, velocidades y música.
+
+export interface FriendLetterItem {
+  id: string;
+  name: string;
+  photoUrl: string;
+  message: string;
+  prevButtonText: string;
+  nextButtonText: string;
+  showOnlyImage?: boolean;
+}
+
+export interface FriendMessagesConfig {
+  sectionTitle: string;
+  sectionBadge: string;
+  promptDelayMs: number;
+  promptButtonText: string;
+  letters: FriendLetterItem[];
+  finalScreen: {
+    title: string;
+    message: string;
+    restartButtonText: string;
+  };
+}
 
 export interface RomanticAppConfig {
   recipientName: string;
@@ -40,25 +61,7 @@ export interface RomanticAppConfig {
     messageDelay: number;
     typewriterSpeed: number;
   };
-  friendMessages: {
-    sectionTitle: string;
-    sectionBadge: string;
-    promptDelayMs: number;
-    promptButtonText: string;
-    letters: Array<{
-      id: 'alicia' | 'elianis' | 'joice' | 'todas' | string;
-      name: string;
-      defaultPhotoUrl: string;
-      message: string;
-      prevButtonText: string;
-      nextButtonText: string;
-    }>;
-    finalScreen: {
-      title: string;
-      message: string;
-      restartButtonText: string;
-    };
-  };
+  friendMessages: FriendMessagesConfig;
 }
 
 export const APP_CONFIG: RomanticAppConfig = {
@@ -102,19 +105,33 @@ export const APP_CONFIG: RomanticAppConfig = {
     typewriterSpeed: 16,        // Efecto máquina de escribir fluido
   },
 
+  // ========================================
+  // CONFIGURACIÓN DE LAS CARTAS
+  // ========================================
   friendMessages: {
     sectionTitle: "Unos mensajes para ti",
     sectionBadge: "DULCES 16 • MENSAJES ESPECIALES",
     promptDelayMs: 5000,
     promptButtonText: "Ver más mensajes",
     letters: [
+      // 1. FOTO DE TODAS (En grande, sin texto ni título para destacar la foto grupal)
+      {
+        id: "todas",
+        name: "",
+        photoUrl: "/images/todas.jpg",
+        prevButtonText: "← Regresar",
+        nextButtonText: "Pasar a la siguiente →",
+        message: "",
+        showOnlyImage: true,
+      },
+      // 2. CARTA 1 — ALICIA
       {
         id: "alicia",
         name: "Alicia",
-        defaultPhotoUrl: "/alicia.jpg",
-        prevButtonText: "← Volver",
-        nextButtonText: "Avanzar →",
-        message: `Feliz cumpleaños a una de mis amistades más importantes
+        photoUrl: "/images/alicia.jpg",
+        prevButtonText: "← Regresar",
+        nextButtonText: "Pasar a la siguiente →",
+        message: `Feliz cumpleaños a una de mis amistades más importantes.
 
 Gracias por ser parte de tantos momentos bonitos, por acompañarme en cada locura y por ser ese “sí a todo” que siempre necesitaba JAJAJA.
 
@@ -125,13 +142,15 @@ Te quiero muchísimo y siempre voy a tener un pedacito de esta etapa guardado co
 Espero que logres todo lo que deseas y que este nuevo año sea de cosas prósperas a tu vida.
 
 Loviu bb.`,
+        showOnlyImage: false,
       },
+      // 3. CARTA 2 — ELIANIS
       {
         id: "elianis",
         name: "Elianis",
-        defaultPhotoUrl: "/elianis.jpg",
-        prevButtonText: "← Anterior",
-        nextButtonText: "Avanzar →",
+        photoUrl: "/images/elianis.jpg",
+        prevButtonText: "← Regresar",
+        nextButtonText: "Pasar a la siguiente →",
         message: `Feliz cumpleaños a una de las personas que jamás pensé que iba a terminar siendo tan importante para mí, porque al principio me caías MAL.
 
 Quién diría que después de eso íbamos a terminar siendo mejores amigas y viviendo tantas cosas juntas.
@@ -141,13 +160,15 @@ Gracias por estar, por escucharme, por aguantar mis locuras y por hacer que hast
 Espero que hoy la pases increíble rodeada de todas las personas que te aman y que este nuevo año te traiga muchísimas cosas buenas.
 
 Te quiero muchísimo mi xixi.`,
+        showOnlyImage: false,
       },
+      // 4. CARTA 3 — JOICE
       {
         id: "joice",
         name: "Joice",
-        defaultPhotoUrl: "/joice.jpg",
-        prevButtonText: "← Anterior",
-        nextButtonText: "Avanzar →",
+        photoUrl: "/images/joice.jpg",
+        prevButtonText: "← Regresar",
+        nextButtonText: "Finalizar",
         message: `Feliz cumpleaños, mi Gene.
 
 Hoy quiero desearle un feliz cumpleaños a una de las personas que forman parte de mi vida. Más que una amiga, eres una hermana más.
@@ -159,20 +180,7 @@ Aunque antes no nos entendíamos muy bien, lograste convertirte en una persona m
 Quiero que Dios te regale un maravilloso cumpleaños y que te permita seguir compartiendo muchos años junto a todas las personas que te amamos, te queremos y estamos agradecidos de que estés en nuestras vidas.
 
 Te quiero muchísimo, Génesis.`,
-      },
-      {
-        id: "todas",
-        name: "Todas",
-        defaultPhotoUrl: "/todas.jpg",
-        prevButtonText: "← Anterior",
-        nextButtonText: "Finalizar",
-        message: `Para nuestra Génesis favorita.
-
-Celebrando cada risa, cada aventura y todo lo que hemos compartido juntas.
-
-Gracias por ser esa luz y alegría tan bonita en nuestras vidas.
-
-¡Te amamos muchísimo y te deseamos el más hermoso cumpleaños!`,
+        showOnlyImage: false,
       },
     ],
     finalScreen: {
@@ -182,5 +190,3 @@ Gracias por ser esa luz y alegría tan bonita en nuestras vidas.
     },
   },
 };
-
-
